@@ -11,6 +11,11 @@
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf/transform_broadcaster.h>
+#include <geometry_msgs/Vector3Stamped.h>
+#include "tf/LinearMath/Transform.h"
+#include <tf/transform_listener.h>
+
+
 
 class mavic_transform_frames
 {
@@ -24,9 +29,11 @@ public:
 private:
 
     void set_up();
-    bool flag_frame_ready=false;
+    bool flag_frame_ready=false,flag_frame_gimball_ready=false;
     ros::NodeHandle nh;
     ros::Subscriber attitude_sub,gimbal_attitude_sub,velocity_sub;
+    ros::Publisher velocity_pub,attitude_pub,gimbal_attitude_pub;
+
 
     void AttitudeCallback(const geometry_msgs::PointStampedConstPtr& attitude);
     void GimbalAttitudeCallback(const geometry_msgs::PointStampedConstPtr& GimbalAttitude);
@@ -34,9 +41,15 @@ private:
 
     tf2_ros::StaticTransformBroadcaster tf_broadcaster_frame;
 
-    double roll_frame=0,pitch_frame=0,yaw_frame=0;
+    double yaw_frame=0,yaw_frame_gimbal=0;
 
-    int count_median=0;
+    //double roll_frame=0,pitch_frame=0,roll_frame_gimbal=0,pitch_frame_gimbal=0;
+
+    int count_median=0,count_median_gimbal=0;
+
+    tf::TransformListener listener;
+
+    double constrainAngle(double x);
 
 
 };

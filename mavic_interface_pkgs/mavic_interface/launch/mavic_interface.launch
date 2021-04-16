@@ -1,0 +1,16 @@
+<!-- Launches: mavic_interface -->
+<launch>
+	<arg name="drone_namespace"     default="drone0" />
+	<arg name="flight_state_topic"                 default="self_localization/flight_state" />
+	<group ns="$(arg drone_namespace)">
+		<!-- mavic_command -->
+
+		<param name="~namespace"                           value="$(arg namespace)"                          type="str" />
+		<param name="~flight_state_topic"                  value="$(arg flight_state_topic)"                 type="str" />
+
+		<node name="mavic_command" pkg="mavic_interface" type="mavic_command"  output="screen">
+		    </node>
+		<node name="mavic_state" pkg="mavic_interface" type="mavic_state"  output="screen">
+        	</node>
+	</group>
+</launch>
