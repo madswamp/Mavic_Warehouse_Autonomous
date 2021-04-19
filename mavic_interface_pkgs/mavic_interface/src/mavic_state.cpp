@@ -25,8 +25,8 @@ void StateInterface::ownStart() {
     flight_state_pub = n.advertise<aerostack_msgs::FlightState>("self_localization/flight_state", 1, true);
 
     flight_action_sub = n.subscribe("actuator_command/flight_action", 1, &StateInterface::flightActionCallback, this);
-    velocity_sub = n.subscribe("Velocity",1,&StateInterface::velocityCallback, this);
-    imu_sub = n.subscribe("Attitude_RPY",1,&StateInterface::imuCallback, this);
+    velocity_sub = n.subscribe("Velocity_World",1,&StateInterface::velocityCallback, this);
+    imu_sub = n.subscribe("Attitude_World",1,&StateInterface::imuCallback, this);
 
     speed_pub = n.advertise<geometry_msgs::TwistStamped>("sensor_measurement/linear_speed", 1, true);
     imu_pub = n.advertise<sensor_msgs::Imu>("sensor_measurement/imu", 1, true);
@@ -141,21 +141,20 @@ void StateInterface::velocityCallback(const geometry_msgs::QuaternionStamped msg
 void StateInterface::imuCallback(const geometry_msgs::PointStamped msg) {
 
     current_timestamp_imu = ros::Time::now();
+    double roll_rad =  msg.point.x * M_PI / 180.0f;
+    double pitch_rad = msg.point.y * M_PI / 180.0f;
+    double yaw_rad = msg.point.z * M_PI / 180.0f;
+
+    double angular_roll=0,angular_pitch=0,angular_yaw=0;
 
     if (flag_firsttime){
-        imudata.dR = 0;
-        imudata.dP = 0;
-        imudata.dY = 0;
         flag_firsttime = false;
     }
     else{
-        double R = msg.point.x * M_PI / 180.0f;
-        double P = msg.point.y * M_PI / 180.0f;
-        double Y = msg.point.z * M_PI / 180.0f;
         double diffTime = (current_timestamp_imu - prev_timestamp_imu).nsec / 1E9;
-        imudata.dR = (R - imudata.R) / diffTime;
-        imudata.dP = (P - imudata.P) / diffTime;
-        imudata.dY = (Y - imudata.Y) / diffTime;
+        angular_roll = (roll_rad - imudata.R) / diffTime;
+        angular_pitch= (pitch_rad - imudata.P) / diffTime;
+        angular_yaw = (yaw_rad - imudata.Y) / diffTime;
     }
 
     // ROTATION
@@ -163,9 +162,10 @@ void StateInterface::imuCallback(const geometry_msgs::PointStamped msg) {
     imudata.P = msg.point.y;
     imudata.Y = msg.point.z;
 
-    double roll_rad =  imudata.R * M_PI / 180.0f;
-    double pitch_rad = imudata.P * M_PI / 180.0f;
-    double yaw_rad = imudata.Y * M_PI / 180.0f;
+    imudata.dR = (1 * angular_roll) - (sin(pitch_rad) * angular_yaw);
+    imudata.dP = (cos(roll_rad) * angular_pitch) + (cos(pitch_rad)*sin(roll_rad) * angular_yaw);
+    imudata.dY = (-sin(roll_rad) * angular_pitch) + (cos(roll_rad)*cos(pitch_rad) * angular_yaw);
+
 
     tf::Quaternion quaternion = tf::createQuaternionFromRPY(roll_rad, pitch_rad, yaw_rad);
 
@@ -176,16 +176,17 @@ void StateInterface::imuCallback(const geometry_msgs::PointStamped msg) {
 
     imu_pub.publish(imu_msg);
     prev_timestamp_imu = current_timestamp_imu;
+
 }
 
 void StateInterface::ownStop() {
-    flight_state_pub.shutdown();
+    /*flight_state_pub.shutdown();
     speed_pub.shutdown();
     imu_pub.shutdown();
     alt_pub.shutdown();
     flight_action_sub.shutdown();
     velocity_sub.shutdown();
-    imu_sub.shutdown();
+    imu_sub.shutdown();*/
 }
 
 //Reset
@@ -210,12 +211,7 @@ int main(int argc,char **argv)
 
     state_interface.start();
 
-    try
-    {
-        ros::spin();
-    }
-    catch (std::exception &ex)
-    {
-        std::cout<<"[ROSNODE] Exception :"<<ex.what()<<std::endl;
-    }
+    ros::spin();
+
+    return 0;
 }

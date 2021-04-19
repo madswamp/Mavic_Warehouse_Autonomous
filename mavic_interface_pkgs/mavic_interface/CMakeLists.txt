@@ -26,9 +26,11 @@ add_dependencies(mavic_state ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_state mavic_interface)
 target_link_libraries(mavic_state ${catkin_LIBRARIES})
 
+#[[
 add_executable(mavic_image  src/mavic_image.cpp src/include/mavic_image.h)
 add_dependencies(mavic_image ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_image mavic_interface)
 target_link_libraries(mavic_image ${catkin_LIBRARIES})
+]]
 
 set_target_properties(mavic_interface PROPERTIES LINKER_LANGUAGE CXX)
