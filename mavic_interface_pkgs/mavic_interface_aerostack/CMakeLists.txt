@@ -6,7 +6,8 @@ project(${PROJECT_NAME})
 add_definitions(-std=c++11)
 
 
-
+set(MAVIC_STATE_INCLUDE_DIR
+        include/mavic_interface_aerostack/mavic_state)
 
 set(MAVIC_STATE_LIB_FILES
         include/mavic_interface_aerostack/mavic_state/mavic_state.h
@@ -27,11 +28,12 @@ catkin_package(
         CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs aerostack_msgs tf)
 
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS} ${MAVIC_STATE_INCLUDE_DIR}
 )
 
 add_library(mavic_state_includes ${MAVIC_STATE_LIB_FILES})
 add_dependencies(mavic_state_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_state_includes ${catkin_LIBRARIES})
 
 add_executable(mavic_state_node src/mavic_state/mavic_state_node.cpp)
 add_dependencies(mavic_state_node ${catkin_EXPORTED_TARGETS})

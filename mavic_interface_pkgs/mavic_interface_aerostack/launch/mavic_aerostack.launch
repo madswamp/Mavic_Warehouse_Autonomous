@@ -1,0 +1,11 @@
+<launch>
+    <arg name="namespace"     default="drone0" />
+    <group ns="$(arg namespace)">
+
+        <node name="mavic_transform_frames_node" pkg="mavic_transform_frames" type="mavic_transform_frames_node"  output="screen">
+        </node>
+
+        <node name="mavic_state_node" pkg="mavic_interface_aerostack" type="mavic_state_node"  output="screen">
+        </node>
+    </group>
+</launch>

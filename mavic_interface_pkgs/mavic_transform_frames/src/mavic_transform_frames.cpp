@@ -165,7 +165,7 @@ void mavic_transform_frames::set_up()
     gimbal_attitude_sub=nh.subscribe("/Gimbal_Attitude",1,&mavic_transform_frames::GimbalAttitudeCallback,this);
     velocity_sub=nh.subscribe("/Velocity",1,&mavic_transform_frames::VelocityCallback,this);
 
-    velocity_pub=nh.advertise<geometry_msgs::QuaternionStamped>("/Velocity_World",1,true);
-    gimbal_attitude_pub=nh.advertise<geometry_msgs::PointStamped>("/Gimbal_Attitude_World",1,true);
-    attitude_pub=nh.advertise<geometry_msgs::PointStamped>("/Attitude_World",1,true);
+    velocity_pub=nh.advertise<geometry_msgs::QuaternionStamped>("Velocity_World",1,true);
+    gimbal_attitude_pub=nh.advertise<geometry_msgs::PointStamped>("Gimbal_Attitude_World",1,true);
+    attitude_pub=nh.advertise<geometry_msgs::PointStamped>("Attitude_World",1,true);
 }
