@@ -15,6 +15,7 @@ int main(int argc,char **argv)
         mavic_aerostack_state.send_state_aerostack();
         if(mavic_aerostack_state.flag_flight_action)
         {
+            ROS_INFO("Kappa");
             mavic_aerostack_state.send_command_aircraft();
             mavic_aerostack_state.flag_flight_action = false;
         }
