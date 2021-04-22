@@ -10,5 +10,8 @@
 
         <node name="mavic_raw_localization_node" pkg="mavic_interface_ros" type="mavic_raw_localization_node"  output="screen">
         </node>
+
+        <node name="mavic_receive_video_node" pkg="mavic_interface_ros" type="mavic_receive_video_node"  output="screen">
+        </node>
     </group>
 </launch>

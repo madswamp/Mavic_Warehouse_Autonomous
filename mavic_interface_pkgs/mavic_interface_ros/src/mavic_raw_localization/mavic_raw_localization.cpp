@@ -47,7 +47,7 @@ void mavic_raw_localization::pub_pose_broadcast_tf()
     tf2::Quaternion attitude_aircraft,attitude_gimbal;
 
     transformStamped.header.stamp=ros::Time::now();
-    transformStamped.header.frame_id="world";
+    transformStamped.header.frame_id="/world";
     transformStamped.child_frame_id=aircraft_name;
     transformStamped.transform.translation.x=velocity_integrator.point.x;
     transformStamped.transform.translation.y=velocity_integrator.point.y;
@@ -59,11 +59,11 @@ void mavic_raw_localization::pub_pose_broadcast_tf()
     transformStamped.transform.rotation.w=attitude_aircraft.w();
     tf.sendTransform(transformStamped);
 
-    transformStamped.header.frame_id=aircraft_name;
+    transformStamped.header.frame_id="/world";
     transformStamped.child_frame_id=aircraft_name+"_gimbal";
-    transformStamped.transform.translation.x=0;
-    transformStamped.transform.translation.y=0;
-    transformStamped.transform.translation.z=0;
+    transformStamped.transform.translation.x=velocity_integrator.point.x;
+    transformStamped.transform.translation.y=velocity_integrator.point.y;
+    transformStamped.transform.translation.z=velocity_integrator.point.z;
     attitude_gimbal.setRPY(gimbal_data.point.x*M_PI/180,gimbal_data.point.y*M_PI/180,gimbal_data.point.z*M_PI/180);
     transformStamped.transform.rotation.x=attitude_gimbal.x();
     transformStamped.transform.rotation.y=attitude_gimbal.y();
@@ -71,7 +71,7 @@ void mavic_raw_localization::pub_pose_broadcast_tf()
     transformStamped.transform.rotation.w=attitude_gimbal.w();
     tf.sendTransform(transformStamped);
 
-    pose_msg.header.frame_id="world";
+    pose_msg.header.frame_id="/world";
     pose_msg.header.stamp=ros::Time::now();
     pose_msg.pose.orientation.x=attitude_aircraft.x();
     pose_msg.pose.orientation.y=attitude_aircraft.y();
