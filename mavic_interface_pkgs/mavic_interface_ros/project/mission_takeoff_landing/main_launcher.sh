@@ -1,9 +1,9 @@
 #!/bin/bash
 
 NUMID_DRONE=0
-export AEROSTACK_PROJECT=${MAVIC_NAV}/src/mavic_interface_pkgs/mavic_interface_aerostack/project/mission_takeoff_landing
+export AEROSTACK_PROJECT=${MAVIC_NAV}/src/mavic_interface_pkgs/mavic_interface_ros/project/mission_takeoff_landing
 
-. ${MAVIC_NAV}/src/mavic_interface_pkgs/mavic_interface_aerostack/config/mission/setup.sh
+. ${MAVIC_NAV}/src/mavic_interface_pkgs/mavic_interface_ros/config/mission/setup.sh
 
 #---------------------------------------------------------------------------------------------
 # INTERNAL PROCESSES
@@ -20,7 +20,7 @@ exec bash\"" \
 `# Mavic Interface                                                                          ` \
 `#---------------------------------------------------------------------------------------------` \
 --tab --title "Mavic Interface" --command "bash -c \"
-roslaunch mavic_interface_aerostack mavic_aerostack.launch --wait \
+roslaunch mavic_interface_ros mavic.launch --wait \
     namespace:=drone$NUMID_DRONE;
 exec bash\"" \
 `#---------------------------------------------------------------------------------------------` \

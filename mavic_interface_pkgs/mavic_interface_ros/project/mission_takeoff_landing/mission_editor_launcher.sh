@@ -2,9 +2,9 @@
 
 NUMID_DRONE=0
 DRONE_SWARM_ID=0
-export AEROSTACK_PROJECT=${AEROSTACK_STACK}/projects/mission_test
+export AEROSTACK_PROJECT=${MAVIC_NAV}/src/mavic_interface_pkgs/mavic_interface_ros/project/mission_takeoff_landing
 
-. ${AEROSTACK_STACK}/config/mission/setup.sh
+. ${MAVIC_NAV}/src/mavic_interface_pkgs/mavic_interface_ros/config/mission/setup.sh
 
 gnome-terminal \
 `#---------------------------------------------------------------------------------------------` \

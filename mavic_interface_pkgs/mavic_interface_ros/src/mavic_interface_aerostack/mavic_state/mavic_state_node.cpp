@@ -1,7 +1,7 @@
 //
 // Created by madswamp on 19/04/21.
 //
-#include "../../include/mavic_interface_aerostack/mavic_state/mavic_state.h"
+#include "../../../include/mavic_interface_ros/mavic_interface_aerostack/mavic_state/mavic_state.h"
 
 int main(int argc,char **argv)
 {
@@ -15,7 +15,6 @@ int main(int argc,char **argv)
         mavic_aerostack_state.send_state_aerostack();
         if(mavic_aerostack_state.flag_flight_action)
         {
-            ROS_INFO("Kappa");
             mavic_aerostack_state.send_command_aircraft();
             mavic_aerostack_state.flag_flight_action = false;
         }

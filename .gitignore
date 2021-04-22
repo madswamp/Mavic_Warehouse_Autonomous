@@ -7,3 +7,4 @@
 /mavic_interface_pkgs/mavic_interface/.idea/
 /mavic_interface_pkgs/mavic_interface_aerostack/cmake-build-debug/
 /mavic_interface_pkgs/mavic_interface_ros/cmake-build-debug/
+/mavic_interface_pkgs/apriltag_ros/

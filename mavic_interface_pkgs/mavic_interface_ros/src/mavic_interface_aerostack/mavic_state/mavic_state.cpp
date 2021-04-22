@@ -2,18 +2,17 @@
 // Created by madswamp on 19/04/21.
 //
 
-#include "../../include/mavic_interface_aerostack/mavic_state/mavic_state.h"
+#include "../../../mavic_interface_ros/mavic_interface_aerostack/mavic_state/mavic_state.h"
 
 
-mavic_state::mavic_state() {
-
+mavic_state::mavic_state()
+{
     velocity_sub=nh.subscribe("Velocity_World",1,&mavic_state::VelocityCallback,this);
     attitude_sub=nh.subscribe("Attitude_World",1,&mavic_state::AttitudeCallback,this);
     aerostack_flight_state_pub=nh.advertise<aerostack_msgs::FlightState>("self_localization/flight_state",1,true);
     linear_speed_rad_pub=nh.advertise<geometry_msgs::TwistStamped>("raw_localization/linear_speed", 1, true);
     imu_rad_pub = nh.advertise<sensor_msgs::Imu>("sensor_measurement/imu", 1, true);
     altitude_pub = nh.advertise<geometry_msgs::PointStamped>("sensor_measurement/altitude", 1, true);
-    //linear_speed_deg_pub=nh.advertise<geometry_msgs::TwistStamped>(raw_localization/linear_speed_deg", 1, true);
     aerostack_flight_state_pub=nh.advertise<aerostack_msgs::FlightState>("self_localization/flight_state", 1, true);
     aerostack_flight_action_sub=nh.subscribe("actuator_command/flight_action", 1,&mavic_state::flight_action_callback,this);
     aircraft_commands_pub=nh.advertise<std_msgs::String>("/Mavic_Commands",1, true);
@@ -141,21 +140,22 @@ void mavic_state::send_state_aerostack()
     switch(command_aerostack.action)
     {
         case aerostack_msgs::FlightActionCommand::TAKE_OFF:
-            if (aircraft_state.state == aerostack_msgs::FlightState::LANDED ||
-                aircraft_state.state == aerostack_msgs::FlightState::UNKNOWN) {
+            if (aircraft_state.state == aerostack_msgs::FlightState::LANDED || aircraft_state.state == aerostack_msgs::FlightState::UNKNOWN)
+            {
                 aircraft_state.state = aerostack_msgs::FlightState::TAKING_OFF;
                 time_takeoff = ros::Time::now();
-            } else {
-                if (aircraft_state.state == aerostack_msgs::FlightState::TAKING_OFF) {
+            }
+            else{
+                if (aircraft_state.state == aerostack_msgs::FlightState::TAKING_OFF)
+                {
                     ros::Duration diff = ros::Time::now() - time_takeoff;
-                    if (std::abs(linear_speed_msg.twist.linear.z) < 0.05 && std::abs(drone_altitude_msg.point.z) > 0.4 &&
-                        diff.toSec() >= 5) {
+                    if (std::abs(drone_altitude_msg.point.z) > 0.2 && diff.toSec() >= 10)
+                    {
                         aircraft_state.state = aerostack_msgs::FlightState::FLYING;
                     }
                 }
             }
             break;
-
         case aerostack_msgs::FlightActionCommand::HOVER:
             if(std::abs(drone_altitude_msg.point.z) > 0.1 && std::abs(linear_speed_msg.twist.linear.x) < 0.05 && std::abs(linear_speed_msg.twist.linear.y) < 0.05 && std::abs(linear_speed_msg.twist.linear.z) < 0.05 &&
                std::abs(linear_speed_msg.twist.angular.x) < 0.05 && std::abs(linear_speed_msg.twist.angular.y) < 0.05 && std::abs(linear_speed_msg.twist.angular.z) < 0.05){
@@ -170,7 +170,7 @@ void mavic_state::send_state_aerostack()
             }
             else{
                 if (aircraft_state.state == aerostack_msgs::FlightState::LANDING){
-                    if (std::abs(drone_altitude_msg.point.z) < 0.1 && std::abs(linear_speed_msg.twist.linear.z < 0.05))
+                    if (std::abs(drone_altitude_msg.point.z) == 0 )
                     {
                         aircraft_state.state = aerostack_msgs::FlightState::LANDED;
                     }
@@ -183,17 +183,21 @@ void mavic_state::send_state_aerostack()
 
 void mavic_state::send_command_aircraft()
 {
+    ROS_INFO("%d,%d",command_aerostack.action,aircraft_state.state);
     std_msgs::String message;
     if(command_aerostack.action==aerostack_msgs::FlightActionCommand::TAKE_OFF &&
-    aircraft_state.state==aerostack_msgs::FlightState::LANDED)
+    aircraft_state.state==aerostack_msgs::FlightState::TAKING_OFF)
     {
         message.data="Takeoff";
     }
     else if(command_aerostack.action==aerostack_msgs::FlightActionCommand::LAND &&
-            (aircraft_state.state==aerostack_msgs::FlightState::HOVERING
-            || aircraft_state.state==aerostack_msgs::FlightState::FLYING))
+            aircraft_state.state==aerostack_msgs::FlightState::LANDING )
     {
         message.data="Land";
+    }
+    else
+    {
+        message.data="";
     }
     aircraft_commands_pub.publish(message);
 }
