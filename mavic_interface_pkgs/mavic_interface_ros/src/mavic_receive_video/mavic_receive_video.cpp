@@ -8,9 +8,9 @@ using namespace cv;
 
 mavic_receive_video::mavic_receive_video()
 {
-    video_compressed_sub=nh.subscribe("/Video_Feed",1,&mavic_receive_video::video_compressed_callback,this);
+    video_compressed_sub=nh.subscribe("Video_Feed",1,&mavic_receive_video::video_compressed_callback,this);
     video_raw_pub=nh.advertise<sensor_msgs::Image>("Video_Feed_Raw/image_raw",1,true);
-    //camera_info_pub=nh.advertise<sensor_msgs::CameraInfo>("Video_Feed_Raw/camera_info",1,true);
+    camera_info_pub=nh.advertise<sensor_msgs::CameraInfo>("Video_Feed_Raw/camera_info",1,true);
 }
 
 mavic_receive_video::~mavic_receive_video()
@@ -26,12 +26,13 @@ void mavic_receive_video::video_compressed_callback(const sensor_msgs::Compresse
 
 void mavic_receive_video::uncompress_frame_and_pub()
 {
-    //camera_info_manager::CameraInfoManager caminfo(nh, camera_name, calibration_file_path);
+    camera_info_manager::CameraInfoManager caminfo(nh, camera_name, calibration_file_path);
+
     sensor_msgs::Image raw_video_msg;
 
     sensor_msgs::CameraInfo camera_info_msg;
 
-    Mat image = cv::imdecode(cv::Mat(image_compressed.data),IMREAD_COLOR);
+    Mat image = cv::imdecode(cv::Mat(image_compressed.data),IMREAD_ANYCOLOR);
 
     std_msgs::Header header=image_compressed.header;
 
@@ -39,11 +40,11 @@ void mavic_receive_video::uncompress_frame_and_pub()
 
     img_bridge.toImageMsg(raw_video_msg);
 
-    //camera_info.header = header;
+    camera_info_msg.header = header;
 
-    //info=caminfo.getCameraInfo();
+    camera_info_msg=caminfo.getCameraInfo();
 
-    //camera_info_pub.publish(info);
+    camera_info_pub.publish(camera_info_msg);
 
     video_raw_pub.publish(raw_video_msg);
 }

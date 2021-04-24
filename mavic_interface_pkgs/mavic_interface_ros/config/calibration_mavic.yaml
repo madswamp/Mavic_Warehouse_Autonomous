@@ -1,0 +1,20 @@
+image_width: 1024
+image_height: 576
+camera_name: Video_Feed_Raw
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [764.2221, 0, 510.935696667, 0, 764.57642, 278.923786667, 0, 0, 1]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.028532, 0.015670333,-0.002380667,-0.001527, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [757.174663333 , 0, 510.168056667, 0, 0, 761.573443333, 278.062033333, 0, 0, 0, 1, 0]

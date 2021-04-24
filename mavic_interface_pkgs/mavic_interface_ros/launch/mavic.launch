@@ -1,5 +1,6 @@
 <launch>
     <arg name="namespace"     default="drone0" />
+    <include file="$(find mavic_interface_ros)/launch/detect_tags.launch" />
     <group ns="$(arg namespace)">
 
         <node name="mavic_transform_frames_node" pkg="mavic_interface_ros" type="mavic_transform_frames_node"  output="screen">
@@ -11,7 +12,11 @@
         <node name="mavic_raw_localization_node" pkg="mavic_interface_ros" type="mavic_raw_localization_node"  output="screen">
         </node>
 
-        <node name="mavic_receive_video_node" pkg="mavic_interface_ros" type="mavic_receive_video_node"  output="screen">
+        <node name="mavic_receive_video_node" pkg="mavic_interface_ros" type="mavic_receive_video_node">
         </node>
+
+        <node name="image_proc" pkg="image_proc" type="image_proc" ns="Video_Feed_Raw">
+        </node>
+
     </group>
 </launch>

@@ -13,8 +13,8 @@
 #include <camera_info_manager/camera_info_manager.h>
 #include <cv.hpp>
 
-//const string calibration_file_path = "file:////home/madswamp/Desktop/LOGS/Imagens_Calibrar/calibration.yaml";
-//const string camera_name = "Video_Feed_Raw";
+const std::string calibration_file_path = "file:////home/madswamp/ros_ws/mavic_nav_ws/src/mavic_interface_pkgs/mavic_interface_ros/config/calibration_mavic.yaml";
+const std::string camera_name = "Video_Feed_Raw";
 
 class mavic_receive_video
 {

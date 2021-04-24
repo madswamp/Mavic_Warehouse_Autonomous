@@ -44,7 +44,7 @@ void mavic_raw_localization::pub_pose_broadcast_tf()
     static tf2_ros::TransformBroadcaster tf;
     geometry_msgs::TransformStamped transformStamped;
     geometry_msgs::PoseStamped pose_msg;
-    tf2::Quaternion attitude_aircraft,attitude_gimbal;
+    tf2::Quaternion attitude_aircraft,attitude_gimbal,attitude_image;
 
     transformStamped.header.stamp=ros::Time::now();
     transformStamped.header.frame_id="/world";
@@ -70,6 +70,23 @@ void mavic_raw_localization::pub_pose_broadcast_tf()
     transformStamped.transform.rotation.z=attitude_gimbal.z();
     transformStamped.transform.rotation.w=attitude_gimbal.w();
     tf.sendTransform(transformStamped);
+
+    transformStamped.header.frame_id=aircraft_name+"_gimbal";
+    transformStamped.child_frame_id=aircraft_name+"_image";
+    transformStamped.transform.translation.x=0;
+    transformStamped.transform.translation.y=0;
+    transformStamped.transform.translation.z=0;
+    tf2::Quaternion q0_helper,q1_helper;
+    q0_helper.setRPY(0,90*M_PI/180,0);
+    q1_helper.setRPY(0,0,90*M_PI/180);
+
+    attitude_gimbal=q0_helper*q1_helper;
+    transformStamped.transform.rotation.x=attitude_gimbal.x();
+    transformStamped.transform.rotation.y=attitude_gimbal.y();
+    transformStamped.transform.rotation.z=attitude_gimbal.z();
+    transformStamped.transform.rotation.w=attitude_gimbal.w();
+    tf.sendTransform(transformStamped);
+
 
     pose_msg.header.frame_id="/world";
     pose_msg.header.stamp=ros::Time::now();

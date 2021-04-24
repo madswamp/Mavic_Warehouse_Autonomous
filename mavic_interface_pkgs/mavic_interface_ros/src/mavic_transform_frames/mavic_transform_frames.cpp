@@ -3,7 +3,16 @@
 
 
 mavic_transform_frames::mavic_transform_frames() {
-    mavic_transform_frames::set_up();
+    attitude_sub=nh.subscribe("Attitude_RPY",1,&mavic_transform_frames::AttitudeCallback,this);
+    gimbal_attitude_sub=nh.subscribe("Gimbal_Attitude",1,&mavic_transform_frames::GimbalAttitudeCallback,this);
+    velocity_sub=nh.subscribe("Velocity",1,&mavic_transform_frames::VelocityCallback,this);
+
+    velocity_pub=nh.advertise<geometry_msgs::QuaternionStamped>("Velocity_World",1,true);
+    gimbal_attitude_pub=nh.advertise<geometry_msgs::PointStamped>("Gimbal_Attitude_World",1,true);
+    attitude_pub=nh.advertise<geometry_msgs::PointStamped>("Attitude_World",1,true);
+
+    relative_yaw_gimbal_aircraft_pub=nh.advertise<std_msgs::Float32>("Relative_Yaw_Gimbal_Aircraft",1,true);
+
     while(!flag_frame_ready && !flag_frame_gimball_ready)
     {
         ros::spinOnce();
@@ -20,25 +29,31 @@ void mavic_transform_frames::VelocityCallback(const geometry_msgs::QuaternionSta
 {
      if(flag_frame_ready==true)
      {
-         geometry_msgs::Vector3Stamped velocity_dji,velocity_our;
-         velocity_dji.header.stamp=ros::Time::now();
-         velocity_dji.header.frame_id="dji_frame";
-         velocity_dji.vector.x=velocity->quaternion.x;
-         velocity_dji.vector.y=velocity->quaternion.y;
-         velocity_dji.vector.z=velocity->quaternion.z;
+         try
+         {
+             geometry_msgs::Vector3Stamped velocity_dji,velocity_our;
+             velocity_dji.header.stamp=ros::Time::now();
+             velocity_dji.header.frame_id="dji_frame";
+             velocity_dji.vector.x=velocity->quaternion.x;
+             velocity_dji.vector.y=velocity->quaternion.y;
+             velocity_dji.vector.z=velocity->quaternion.z;
 
-         listener.transformVector(std::string("world"),velocity_dji,velocity_our);
+             listener.transformVector(std::string("world"),velocity_dji,velocity_our);
 
-         geometry_msgs::QuaternionStamped velocity_world;
+             geometry_msgs::QuaternionStamped velocity_world;
 
-         velocity_world.header.stamp=ros::Time::now();
-         velocity_world.header.frame_id="world";
-         velocity_world.quaternion.x=velocity_our.vector.x;
-         velocity_world.quaternion.y=velocity_our.vector.y;
-         velocity_world.quaternion.z=-velocity_our.vector.z;
-         velocity_world.quaternion.w=velocity->quaternion.w;
-         velocity_pub.publish(velocity_world);
-
+             velocity_world.header.stamp=ros::Time::now();
+             velocity_world.header.frame_id="world";
+             velocity_world.quaternion.x=velocity_our.vector.x;
+             velocity_world.quaternion.y=velocity_our.vector.y;
+             velocity_world.quaternion.z=velocity_our.vector.z;
+             velocity_world.quaternion.w=velocity->quaternion.w;
+             velocity_pub.publish(velocity_world);
+         }
+         catch (tf2::LookupException e)
+         {
+            ROS_INFO("kappa");
+         }
      }
 }
 
@@ -78,8 +93,6 @@ void mavic_transform_frames::AttitudeCallback(const geometry_msgs::PointStampedC
             static_transform_message.transform.rotation.z=q.z();
             static_transform_message.transform.rotation.w=q.w();
 
-
-
             tf_broadcaster_frame.sendTransform(static_transform_message);
      
             flag_frame_ready=true;
@@ -94,7 +107,7 @@ void mavic_transform_frames::AttitudeCallback(const geometry_msgs::PointStampedC
     }
     else
     {
-        geometry_msgs::PointStamped attitude_world;
+
 
         attitude_world.header.frame_id="world";
         attitude_world.header.stamp=ros::Time::now();
@@ -134,7 +147,7 @@ void mavic_transform_frames::GimbalAttitudeCallback(const geometry_msgs::PointSt
     }
     else
     {
-        geometry_msgs::PointStamped attitude_gimbal_world;
+
 
         attitude_gimbal_world.header.frame_id="world";
         attitude_gimbal_world.header.stamp=ros::Time::now();
@@ -155,16 +168,14 @@ double mavic_transform_frames::constrainAngle(double x){
     return x - 180;
 }
 
-
-
-
-void mavic_transform_frames::set_up()
+void mavic_transform_frames::Relative_Yaw_Gimbal_Aircraft()
 {
-    attitude_sub=nh.subscribe("/Attitude_RPY",1,&mavic_transform_frames::AttitudeCallback,this);
-    gimbal_attitude_sub=nh.subscribe("/Gimbal_Attitude",1,&mavic_transform_frames::GimbalAttitudeCallback,this);
-    velocity_sub=nh.subscribe("/Velocity",1,&mavic_transform_frames::VelocityCallback,this);
-
-    velocity_pub=nh.advertise<geometry_msgs::QuaternionStamped>("Velocity_World",1,true);
-    gimbal_attitude_pub=nh.advertise<geometry_msgs::PointStamped>("Gimbal_Attitude_World",1,true);
-    attitude_pub=nh.advertise<geometry_msgs::PointStamped>("Attitude_World",1,true);
+    std_msgs::Float32 Relative_Yaw;
+    Relative_Yaw.data=(attitude_world.point.z-attitude_gimbal_world.point.z);
+    relative_yaw_gimbal_aircraft_pub.publish(Relative_Yaw);
 }
+
+
+
+
+

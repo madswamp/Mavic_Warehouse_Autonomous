@@ -18,6 +18,9 @@ set(MAVIC_RAW_LOCALIZATION_INCLUDE_DIR
 set(MAVIC_RECEIVE_VIDEO_INCLUDE_DIR
         include/mavic_interface_ros/mavic_receive_video)
 
+set(MAVIC_TAGS_WORLD_TF_INCLUDE_DIR
+        include/mavic_interface_ros/mavic_tags_world_tf)
+
 
 
 set(MAVIC_TRANSFORM_FRAMES_LIB_FILES
@@ -37,6 +40,10 @@ set(MAVIC_RECEIVE_VIDEO_LIB_FILES
         include/mavic_interface_ros/mavic_receive_video/mavic_receive_video.h
         src/mavic_receive_video/mavic_receive_video.cpp)
 
+set(MAVIC_TAGS_WORLD_TF_LIB_FILES
+        include/mavic_interface_ros/mavic_tags_world_tf/mavic_tags_world_tf.h
+        src/mavic_tags_world_tf/mavic_tags_world_tf.cpp)
+
 
 
 find_package(catkin REQUIRED COMPONENTS
@@ -48,19 +55,31 @@ find_package(catkin REQUIRED COMPONENTS
         std_msgs
         aerostack_msgs
         tf
-        camera_info_manager)
+        camera_info_manager
+        apriltag_ros)
+
+
+find_package(PkgConfig)
+find_package( OpenCV REQUIRED )
+
+
+pkg_search_module(apriltag REQUIRED apriltag)
+set(apriltag_INCLUDE_DIRS "${apriltag_INCLUDE_DIRS}/apriltag")
+link_directories(${apriltag_LIBDIR})
 
 
 catkin_package(
-        CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs aerostack_msgs cv_bridge camera_info_manager)
+        CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs aerostack_msgs cv_bridge camera_info_manager
+        DEPENDS apriltag)
 
 
 include_directories(
         ${catkin_INCLUDE_DIRS} ${MAVIC_TRANSFORM_FRAMES_INCLUDE_DIR}  ${MAVIC_STATE_INCLUDE_DIR} ${MAVIC_RAW_LOCALIZATION_INCLUDE_DIR}
         ${OpenCV_INCLUDE_DIRS}
+        ${apriltag_INCLUDE_DIRS}
 )
 
-find_package( OpenCV REQUIRED )
+
 
 add_library(mavic_transform_frames_include ${MAVIC_TRANSFORM_FRAMES_LIB_FILES})
 add_dependencies(mavic_transform_frames_include ${catkin_EXPORTED_TARGETS})
@@ -77,6 +96,10 @@ target_link_libraries(mavic_raw_localization_includes ${catkin_LIBRARIES})
 add_library(mavic_receive_video_includes ${MAVIC_RECEIVE_VIDEO_LIB_FILES})
 add_dependencies(mavic_receive_video_includes ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_receive_video_includes ${catkin_LIBRARIES} ${OpenCV_LIBS})
+
+#[[add_library(mavic_tags_world_tf_includes ${MAVIC_TAGS_WORLD_TF_LIB_FILES})
+add_dependencies(mavic_tags_world_tf_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_tags_world_tf_includes ${catkin_LIBRARIES})]]
 
 
 
@@ -99,6 +122,11 @@ add_executable(mavic_receive_video_node src/mavic_receive_video/mavic_receive_vi
 add_dependencies(mavic_receive_video_node  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_receive_video_node  mavic_receive_video_includes)
 target_link_libraries(mavic_receive_video_node  ${catkin_LIBRARIES} ${OpenCV_LIBS})
+
+#[[add_executable(mavic_tags_world_tf_node src/mavic_tags_world_tf/mavic_tags_world_tf_node.cpp)
+add_dependencies(mavic_tags_world_tf_node  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_tags_world_tf_node  mavic_tags_world_tf_includes)
+target_link_libraries(mavic_tags_world_tf_node  ${catkin_LIBRARIES})]]
 
 
 

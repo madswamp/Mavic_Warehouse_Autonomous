@@ -7,7 +7,7 @@ int main(int argc,char **argv)
 {
     ros::init(argc, argv, "Mavic_Receive_Video");
     mavic_receive_video mavic_video;
-    ros::Rate r(40);
+    ros::Rate r(20);
     while (ros::ok())
     {
         if(mavic_video.flag_new_frame)

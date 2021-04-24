@@ -15,7 +15,7 @@ mavic_state::mavic_state()
     altitude_pub = nh.advertise<geometry_msgs::PointStamped>("sensor_measurement/altitude", 1, true);
     aerostack_flight_state_pub=nh.advertise<aerostack_msgs::FlightState>("self_localization/flight_state", 1, true);
     aerostack_flight_action_sub=nh.subscribe("actuator_command/flight_action", 1,&mavic_state::flight_action_callback,this);
-    aircraft_commands_pub=nh.advertise<std_msgs::String>("/Mavic_Commands",1, true);
+    aircraft_commands_pub=nh.advertise<std_msgs::String>("Mavic_Commands",1, true);
     command_aerostack.action=aerostack_msgs::FlightActionCommand::UNKNOWN;
     aircraft_state.state=aerostack_msgs::FlightState::LANDED;
 }
