@@ -89,7 +89,7 @@ void mavic_state::send_state_data_aerostack()
 
 
         linear_speed_msg.header.stamp=ros::Time::now();
-        linear_speed_msg.header.frame_id="world";
+        linear_speed_msg.header.frame_id="map";
 
         linear_speed_msg.twist.linear.x=velocity_aircraft_world.quaternion.x;
         linear_speed_msg.twist.linear.y=velocity_aircraft_world.quaternion.y;
@@ -110,7 +110,7 @@ void mavic_state::send_state_data_aerostack()
         tf2::Quaternion orientation_quaternion;
 
         imu_msg.header.stamp=ros::Time::now();
-        imu_msg.header.frame_id="world";
+        imu_msg.header.frame_id="map";
 
         imu_msg.linear_acceleration.x=0;
         imu_msg.linear_acceleration.y=0;
@@ -130,7 +130,7 @@ void mavic_state::send_state_data_aerostack()
         imu_rad_pub.publish(imu_msg);
     }
     drone_altitude_msg.header.stamp=ros::Time::now();
-    drone_altitude_msg.header.frame_id="world";
+    drone_altitude_msg.header.frame_id="map";
     drone_altitude_msg.point.z=velocity_aircraft_world.quaternion.w;
     altitude_pub.publish(drone_altitude_msg);
 }

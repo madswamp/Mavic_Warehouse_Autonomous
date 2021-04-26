@@ -40,7 +40,7 @@ void mavic_receive_video::uncompress_frame_and_pub()
 
     img_bridge.toImageMsg(raw_video_msg);
 
-    camera_info_msg.header = header;
+   camera_info_msg.header = header;
 
     camera_info_msg=caminfo.getCameraInfo();
 

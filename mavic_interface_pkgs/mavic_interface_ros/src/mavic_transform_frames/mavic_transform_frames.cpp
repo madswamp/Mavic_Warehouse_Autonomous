@@ -38,7 +38,7 @@ void mavic_transform_frames::VelocityCallback(const geometry_msgs::QuaternionSta
              velocity_dji.vector.y=velocity->quaternion.y;
              velocity_dji.vector.z=velocity->quaternion.z;
 
-             listener.transformVector(std::string("world"),velocity_dji,velocity_our);
+             listener.transformVector(std::string("map"),velocity_dji,velocity_our);
 
              geometry_msgs::QuaternionStamped velocity_world;
 
@@ -52,7 +52,7 @@ void mavic_transform_frames::VelocityCallback(const geometry_msgs::QuaternionSta
          }
          catch (tf2::LookupException e)
          {
-            ROS_INFO("kappa");
+
          }
      }
 }
@@ -76,7 +76,7 @@ void mavic_transform_frames::AttitudeCallback(const geometry_msgs::PointStampedC
             yaw_frame=yaw_frame*M_PI/180;
 
             static_transform_message.header.stamp=ros::Time::now();
-            static_transform_message.header.frame_id="world";
+            static_transform_message.header.frame_id="map";
             static_transform_message.child_frame_id="dji_frame";
 
             static_transform_message.transform.translation.x=0;

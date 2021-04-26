@@ -2,7 +2,6 @@
     <arg name="namespace"     default="drone0" />
     <include file="$(find mavic_interface_ros)/launch/detect_tags.launch" />
     <group ns="$(arg namespace)">
-
         <node name="mavic_transform_frames_node" pkg="mavic_interface_ros" type="mavic_transform_frames_node"  output="screen">
         </node>
 
@@ -18,5 +17,16 @@
         <node name="image_proc" pkg="image_proc" type="image_proc" ns="Video_Feed_Raw">
         </node>
 
+        <node name="mavic_slam_gtsam_node" pkg="mavic_interface_ros" type="mavic_slam_gtsam_node" output="screen">
+            <param name="~init_tag" type="int" value="19" />
+        </node>
+
+        <node name="mavic_optimized_frames_node" pkg="mavic_interface_ros" type="mavic_optimized_frames_node" output="screen">
+        </node>
+
+        <node name="mavic_dunker_pose_node" pkg="mavic_interface_ros" type="mavic_dunker_pose_node" output="screen">
+        </node>
+
+        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mavic_interface_ros)/config/rviz.rviz"/>
     </group>
 </launch>

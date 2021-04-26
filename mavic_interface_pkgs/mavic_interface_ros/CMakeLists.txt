@@ -18,8 +18,14 @@ set(MAVIC_RAW_LOCALIZATION_INCLUDE_DIR
 set(MAVIC_RECEIVE_VIDEO_INCLUDE_DIR
         include/mavic_interface_ros/mavic_receive_video)
 
-set(MAVIC_TAGS_WORLD_TF_INCLUDE_DIR
-        include/mavic_interface_ros/mavic_tags_world_tf)
+set(MAVIC_SLAM_GTSAM_INCLUDE_DIR
+        include/mavic_interface_ros/mavic_slam_gtsam)
+
+set(MAVIC_OPTIMIZED_FRAMES_INCLUDE_DIR
+        include/mavic_interface_ros/mavic_optimized_frames)
+
+set(MAVIC_DUNKER_POSE_INCLUDE_DIR
+        include/mavic_interface_ros/mavic_dunker_pose)
 
 
 
@@ -31,7 +37,6 @@ set(MAVIC_STATE_LIB_FILES
         include/mavic_interface_ros/mavic_interface_aerostack/mavic_state/mavic_state.h
         src/mavic_interface_aerostack/mavic_state/mavic_state.cpp)
 
-
 set(MAVIC_RAW_LOCALIZATION_LIB_FILES
         include/mavic_interface_ros/mavic_raw_localization/mavic_raw_localization.h
         src/mavic_raw_localization/mavic_raw_localization.cpp)
@@ -40,9 +45,17 @@ set(MAVIC_RECEIVE_VIDEO_LIB_FILES
         include/mavic_interface_ros/mavic_receive_video/mavic_receive_video.h
         src/mavic_receive_video/mavic_receive_video.cpp)
 
-set(MAVIC_TAGS_WORLD_TF_LIB_FILES
-        include/mavic_interface_ros/mavic_tags_world_tf/mavic_tags_world_tf.h
-        src/mavic_tags_world_tf/mavic_tags_world_tf.cpp)
+set(MAVIC_SLAM_GTSAM_LIB_FILES
+        include/mavic_interface_ros/mavic_slam_gtsam/mavic_slam_gtsam.h
+        src/mavic_slam_gtsam/mavic_slam_gtsam.cpp)
+
+set(MAVIC_OPTIMIZED_FRAMES_LIB_FILES
+        include/mavic_interface_ros/mavic_optimized_frames/mavic_optimized_frames.h
+        src/mavic_optimized_frames/mavic_optimized_frames.cpp)
+
+set(MAVIC_DUNKER_POSE_LIB_FILES
+        include/mavic_interface_ros/mavic_dunker_pose/mavic_dunker_pose.h
+        src/mavic_dunker_pose/mavic_dunker_pose.cpp)
 
 
 
@@ -61,6 +74,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(PkgConfig)
 find_package( OpenCV REQUIRED )
+find_package(GTSAMCMakeTools)
+find_package(GTSAM REQUIRED)
+include_directories(${GTSAM_INCLUDE_DIR})
 
 
 pkg_search_module(apriltag REQUIRED apriltag)
@@ -74,7 +90,14 @@ catkin_package(
 
 
 include_directories(
-        ${catkin_INCLUDE_DIRS} ${MAVIC_TRANSFORM_FRAMES_INCLUDE_DIR}  ${MAVIC_STATE_INCLUDE_DIR} ${MAVIC_RAW_LOCALIZATION_INCLUDE_DIR}
+        ${catkin_INCLUDE_DIRS}
+        ${MAVIC_TRANSFORM_FRAMES_INCLUDE_DIR}
+        ${MAVIC_STATE_INCLUDE_DIR}
+        ${MAVIC_RAW_LOCALIZATION_INCLUDE_DIR}
+        ${MAVIC_RECEIVE_VIDEO_INCLUDE_DIR}
+        ${MAVIC_SLAM_GTSAM_INCLUDE_DIR}
+        ${MAVIC_OPTIMIZED_FRAMES_INCLUDE_DIR}
+        ${MAVIC_DUNKER_POSE_INCLUDE_DIR}
         ${OpenCV_INCLUDE_DIRS}
         ${apriltag_INCLUDE_DIRS}
 )
@@ -97,9 +120,17 @@ add_library(mavic_receive_video_includes ${MAVIC_RECEIVE_VIDEO_LIB_FILES})
 add_dependencies(mavic_receive_video_includes ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_receive_video_includes ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-#[[add_library(mavic_tags_world_tf_includes ${MAVIC_TAGS_WORLD_TF_LIB_FILES})
-add_dependencies(mavic_tags_world_tf_includes ${catkin_EXPORTED_TARGETS})
-target_link_libraries(mavic_tags_world_tf_includes ${catkin_LIBRARIES})]]
+add_library(mavic_slam_gtsam_includes ${MAVIC_SLAM_GTSAM_LIB_FILES})
+add_dependencies(mavic_slam_gtsam_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_slam_gtsam_includes gtsam ${catkin_LIBRARIES})
+
+add_library(mavic_optimized_frames_includes ${MAVIC_OPTIMIZED_FRAMES_LIB_FILES})
+add_dependencies(mavic_optimized_frames_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_optimized_frames_includes ${catkin_LIBRARIES})
+
+add_library(mavic_dunker_pose_includes ${MAVIC_DUNKER_POSE_LIB_FILES})
+add_dependencies(mavic_dunker_pose_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_dunker_pose_includes ${catkin_LIBRARIES})
 
 
 
@@ -123,10 +154,20 @@ add_dependencies(mavic_receive_video_node  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_receive_video_node  mavic_receive_video_includes)
 target_link_libraries(mavic_receive_video_node  ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-#[[add_executable(mavic_tags_world_tf_node src/mavic_tags_world_tf/mavic_tags_world_tf_node.cpp)
-add_dependencies(mavic_tags_world_tf_node  ${catkin_EXPORTED_TARGETS})
-target_link_libraries(mavic_tags_world_tf_node  mavic_tags_world_tf_includes)
-target_link_libraries(mavic_tags_world_tf_node  ${catkin_LIBRARIES})]]
+add_executable(mavic_slam_gtsam_node src/mavic_slam_gtsam/mavic_slam_gtsam_node.cpp)
+add_dependencies(mavic_slam_gtsam_node  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_slam_gtsam_node  mavic_slam_gtsam_includes)
+target_link_libraries(mavic_slam_gtsam_node gtsam ${catkin_LIBRARIES})
+
+add_executable(mavic_optimized_frames_node src/mavic_optimized_frames/mavic_optimized_frames_node.cpp)
+add_dependencies(mavic_optimized_frames_node  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_optimized_frames_node  mavic_optimized_frames_includes)
+target_link_libraries(mavic_optimized_frames_node ${catkin_LIBRARIES})
+
+add_executable(mavic_dunker_pose_node src/mavic_dunker_pose/mavic_dunker_pose_node.cpp)
+add_dependencies(mavic_dunker_pose_node  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_dunker_pose_node  mavic_dunker_pose_includes)
+target_link_libraries(mavic_dunker_pose_node ${catkin_LIBRARIES})
 
 
 
