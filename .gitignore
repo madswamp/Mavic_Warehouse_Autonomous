@@ -9,3 +9,6 @@
 /mavic_interface_pkgs/mavic_interface_ros/cmake-build-debug/
 
 /apriltag_ros/apriltag_ros/
+/mavic_interface_pkgs/people_ray/cmake-build-debug/
+/mavic_interface_pkgs/people_locator/cmake-build-debug/
+/mavic_interface_pkgs/mavic_freebots_mission/.idea/

@@ -17,6 +17,14 @@ roslaunch basic_quadrotor_behaviors basic_quadrotor_behaviors.launch --wait \
     namespace:=drone$NUMID_DRONE;
 exec bash\"" \
 `#---------------------------------------------------------------------------------------------` \
+`# Quadrotor Motion With Platform Control                                                           ` \
+`#---------------------------------------------------------------------------------------------` \
+--tab --title "Quadrotor Motion With PID Control" --command "bash -c \"
+roslaunch quadrotor_motion_with_pid_control quadrotor_motion_with_pid_control.launch --wait \
+    namespace:=drone$NUMID_DRONE \
+    robot_config_path:=${AEROSTACK_PROJECT}/configs/drone$NUMID_DRONE;
+exec bash\"" \
+`#---------------------------------------------------------------------------------------------` \
 `# Mavic Interface                                                                          ` \
 `#---------------------------------------------------------------------------------------------` \
 --tab --title "Mavic Interface" --command "bash -c \"

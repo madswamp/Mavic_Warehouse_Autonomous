@@ -26,6 +26,6 @@ if [ -z $NETWORK_ROSCORE ] # Check if NETWORK_ROSCORE is NULL
     export ROS_MASTER_URI=http://$NETWORK_ROSCORE:11311
     OWN_IP=$(ifconfig | grep -Eo "[0-9]{3}\.[0-9]{2,3}\.[0-9]{1,3}\.[0-9]{1,3}" | head -n1)
     echo "-My IP in network (please check!)="$OWN_IP
-    export ROS_IP=$OWN_IP
-    export ROS_HOSTNAME=$OWN_IP
+    export ROS_IP=192.168.43.171
+    export ROS_HOSTNAME=192.168.43.171
 fi

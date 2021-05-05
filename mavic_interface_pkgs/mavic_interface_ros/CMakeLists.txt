@@ -27,6 +27,15 @@ set(MAVIC_OPTIMIZED_FRAMES_INCLUDE_DIR
 set(MAVIC_DUNKER_POSE_INCLUDE_DIR
         include/mavic_interface_ros/mavic_dunker_pose)
 
+set(MAVIC_OPTIMIZED_LOCALIZATION_AEROSTACK_INCLUDE_DIR
+        include/mavic_interface_ros/mavic_interface_aerostack/mavic_optimized_localization)
+
+set(MAVIC_SEND_VELOCITY_AIRCRAFT_INCLUDE_DIR
+        include/mavic_interface_ros/mavic_send_velocity_aircraft)
+
+set(MAVIC_SEND_WAYPOINTS_FREE_BOT_INCLUDE_DIR
+        include/mavic_interface_ros/mavic_send_waypoints_free_bot)
+
 
 
 set(MAVIC_TRANSFORM_FRAMES_LIB_FILES
@@ -56,6 +65,18 @@ set(MAVIC_OPTIMIZED_FRAMES_LIB_FILES
 set(MAVIC_DUNKER_POSE_LIB_FILES
         include/mavic_interface_ros/mavic_dunker_pose/mavic_dunker_pose.h
         src/mavic_dunker_pose/mavic_dunker_pose.cpp)
+
+set(MAVIC_OPTIMIZED_LOCALIZATION_AEROSTACK_LIB_FILES
+        include/mavic_interface_ros/mavic_interface_aerostack/mavic_optimized_localization/mavic_optimized_localization.h
+        src/mavic_interface_aerostack/mavic_optimized_localization/mavic_optimized_localization.cpp)
+
+set(MAVIC_SEND_VELOCITY_AIRCRAFT_LIB_FILES
+        include/mavic_interface_ros/mavic_send_velocity_aircraft/mavic_send_velocity_aircraft.h
+        src/mavic_send_velocity_aircraft/mavic_send_velocity_aircraft.cpp)
+
+set(MAVIC_SEND_WAYPOINTS_FREE_BOT_LIB_FILES
+        include/mavic_interface_ros/mavic_send_waypoints_free_bot/mavic_send_waypoints_free_bot.h
+        src/mavic_send_waypoints_free_bot/mavic_send_waypoints_free_bot.cpp)
 
 
 
@@ -98,6 +119,9 @@ include_directories(
         ${MAVIC_SLAM_GTSAM_INCLUDE_DIR}
         ${MAVIC_OPTIMIZED_FRAMES_INCLUDE_DIR}
         ${MAVIC_DUNKER_POSE_INCLUDE_DIR}
+        ${MAVIC_OPTIMIZED_LOCALIZATION_AEROSTACK_INCLUDE_DIR}
+        ${MAVIC_SEND_VELOCITY_AIRCRAFT_INCLUDE_DIR}
+        ${MAVIC_SEND_WAYPOINTS_FREE_BOT_INCLUDE_DIR}
         ${OpenCV_INCLUDE_DIRS}
         ${apriltag_INCLUDE_DIRS}
 )
@@ -131,6 +155,18 @@ target_link_libraries(mavic_optimized_frames_includes ${catkin_LIBRARIES})
 add_library(mavic_dunker_pose_includes ${MAVIC_DUNKER_POSE_LIB_FILES})
 add_dependencies(mavic_dunker_pose_includes ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_dunker_pose_includes ${catkin_LIBRARIES})
+
+add_library(mavic_optimized_localization_aerostack_includes ${MAVIC_OPTIMIZED_LOCALIZATION_AEROSTACK_LIB_FILES})
+add_dependencies(mavic_optimized_localization_aerostack_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_optimized_localization_aerostack_includes ${catkin_LIBRARIES})
+
+add_library(mavic_send_velocity_aircraft_includes ${MAVIC_SEND_VELOCITY_AIRCRAFT_LIB_FILES})
+add_dependencies(mavic_send_velocity_aircraft_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_send_velocity_aircraft_includes ${catkin_LIBRARIES})
+
+add_library(mavic_send_waypoints_free_bot_includes ${MAVIC_SEND_WAYPOINTS_FREE_BOT_LIB_FILES})
+add_dependencies(mavic_send_waypoints_free_bot_includes ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_send_waypoints_free_bot_includes ${catkin_LIBRARIES})
 
 
 
@@ -168,6 +204,21 @@ add_executable(mavic_dunker_pose_node src/mavic_dunker_pose/mavic_dunker_pose_no
 add_dependencies(mavic_dunker_pose_node  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(mavic_dunker_pose_node  mavic_dunker_pose_includes)
 target_link_libraries(mavic_dunker_pose_node ${catkin_LIBRARIES})
+
+add_executable(mavic_optimized_localization_aerostack_node src/mavic_interface_aerostack/mavic_optimized_localization/mavic_optimized_localization_node.cpp)
+add_dependencies(mavic_optimized_localization_aerostack_node  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_optimized_localization_aerostack_node  mavic_optimized_localization_aerostack_includes)
+target_link_libraries(mavic_optimized_localization_aerostack_node ${catkin_LIBRARIES})
+
+add_executable(mavic_send_velocity_aircraft_node src/mavic_send_velocity_aircraft/mavic_send_velocity_aircraft_node.cpp)
+add_dependencies(mavic_send_velocity_aircraft_node  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_send_velocity_aircraft_node  mavic_send_velocity_aircraft_includes)
+target_link_libraries(mavic_send_velocity_aircraft_node ${catkin_LIBRARIES})
+
+add_executable(mavic_send_waypoints_free_bot_node src/mavic_send_waypoints_free_bot/mavic_send_waypoints_free_bot_node.cpp)
+add_dependencies(mavic_send_waypoints_free_bot_node  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mavic_send_waypoints_free_bot_node  mavic_send_waypoints_free_bot_includes)
+target_link_libraries(mavic_send_waypoints_free_bot_node ${catkin_LIBRARIES})
 
 
 

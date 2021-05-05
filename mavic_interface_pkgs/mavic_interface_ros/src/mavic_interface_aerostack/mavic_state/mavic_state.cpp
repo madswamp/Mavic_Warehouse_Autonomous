@@ -29,7 +29,16 @@ mavic_state::~mavic_state() {
 void mavic_state::flight_action_callback(const aerostack_msgs::FlightActionCommandConstPtr& msg)
 {
     flag_flight_action=true;
-    command_aerostack= *msg;
+    if(msg->action==20)
+    {
+        command_aerostack.action=aerostack_msgs::FlightActionCommand::UNKNOWN;
+        aircraft_state.state=aerostack_msgs::FlightState::LANDED;
+    }
+    else
+    {
+        command_aerostack= *msg;
+    }
+
 }
 
 void mavic_state::AttitudeCallback(const geometry_msgs::PointStampedConstPtr& attitude)
@@ -89,7 +98,7 @@ void mavic_state::send_state_data_aerostack()
 
 
         linear_speed_msg.header.stamp=ros::Time::now();
-        linear_speed_msg.header.frame_id="map";
+        linear_speed_msg.header.frame_id="map_ned";
 
         linear_speed_msg.twist.linear.x=velocity_aircraft_world.quaternion.x;
         linear_speed_msg.twist.linear.y=velocity_aircraft_world.quaternion.y;
@@ -130,7 +139,7 @@ void mavic_state::send_state_data_aerostack()
         imu_rad_pub.publish(imu_msg);
     }
     drone_altitude_msg.header.stamp=ros::Time::now();
-    drone_altitude_msg.header.frame_id="map";
+    drone_altitude_msg.header.frame_id="map_ned";
     drone_altitude_msg.point.z=velocity_aircraft_world.quaternion.w;
     altitude_pub.publish(drone_altitude_msg);
 }

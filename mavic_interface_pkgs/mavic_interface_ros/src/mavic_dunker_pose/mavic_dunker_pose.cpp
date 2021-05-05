@@ -53,6 +53,8 @@ void mavic_dunker_pose::send_dunker_pose()
             continue;
         }
     }
+
+
     geometry_msgs::PoseWithCovarianceStamped dunker_pose;
 
     dunker_pose.header.stamp=ros::Time::now();
@@ -60,10 +62,22 @@ void mavic_dunker_pose::send_dunker_pose()
     dunker_pose.pose.pose.position.x=transformStamped.transform.translation.x;
     dunker_pose.pose.pose.position.y=transformStamped.transform.translation.y;
     dunker_pose.pose.pose.position.z=transformStamped.transform.translation.z;
-    dunker_pose.pose.pose.orientation.x=transformStamped.transform.rotation.x;
-    dunker_pose.pose.pose.orientation.y=transformStamped.transform.rotation.y;
-    dunker_pose.pose.pose.orientation.z=transformStamped.transform.rotation.z;
-    dunker_pose.pose.pose.orientation.w=transformStamped.transform.rotation.w;
+
+    tf2::Quaternion transform_pose_90,transform_to_send,orientation_dunker_quat;
+
+    transform_pose_90.setRPY(0,0,M_PI/2);
+    orientation_dunker_quat.setX(transformStamped.transform.rotation.x);
+    orientation_dunker_quat.setY(transformStamped.transform.rotation.y);
+    orientation_dunker_quat.setZ(transformStamped.transform.rotation.z);
+    orientation_dunker_quat.setW(transformStamped.transform.rotation.w);
+
+    transform_to_send=orientation_dunker_quat*transform_pose_90;
+
+
+    dunker_pose.pose.pose.orientation.x=transform_to_send.x();
+    dunker_pose.pose.pose.orientation.y=transform_to_send.y();
+    dunker_pose.pose.pose.orientation.z=transform_to_send.z();
+    dunker_pose.pose.pose.orientation.w=transform_to_send.w();
     dunker_pose.pose.covariance=aircraft_optimized_pose.pose.covariance;
     not_dunker_pose_pub.publish(dunker_pose);
 }

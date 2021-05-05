@@ -23,6 +23,11 @@ int main(int argc,char **argv)
             Mavic_Slam.add_landmark_to_graph();
             Mavic_Slam.flag_new_update=false;
         }
+        if(Mavic_Slam.flag_new_velocity)
+        {
+            //Mavic_Slam.
+            //Mavic_Slam.flag_new_velocity=false;
+        }
         if(Mavic_Slam.counter_odometry_factors==3)
         {
             Mavic_Slam.optimize_factor_graph();

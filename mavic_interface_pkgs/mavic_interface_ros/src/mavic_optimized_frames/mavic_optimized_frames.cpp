@@ -50,7 +50,7 @@ void mavic_optimized_frames::broadcast_optimized_transforms()
     tf2::Quaternion Gimbal_Attitude_Quaternion,Pose_Optimized_Quaternion,Image_Gimbal_Quaternion;
 
     transformStamped.header.stamp=ros::Time::now();
-    transformStamped.header.frame_id="map";
+    transformStamped.header.frame_id="map_ned";
     transformStamped.child_frame_id=aircraft_name+"_gimbal_optimized";
     transformStamped.transform.translation.x=pose_optimized.pose.pose.position.x;
     transformStamped.transform.translation.y=pose_optimized.pose.pose.position.y;
@@ -91,7 +91,5 @@ void mavic_optimized_frames::broadcast_optimized_transforms()
     transformStamped.transform.rotation.z=Image_Gimbal_Quaternion.z();
     transformStamped.transform.rotation.w=Image_Gimbal_Quaternion.w();
     tf.sendTransform(transformStamped);
-
-
 
 }

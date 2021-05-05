@@ -31,8 +31,8 @@ private:
 
 
     ros::NodeHandle nh;
-    ros::Subscriber attitude_sub,gimbal_attitude_sub,velocity_sub;
-    ros::Publisher velocity_pub,attitude_pub,gimbal_attitude_pub,relative_yaw_gimbal_aircraft_pub;
+    ros::Subscriber attitude_sub,gimbal_attitude_sub,velocity_sub,tag_sub;
+    ros::Publisher velocity_pub,attitude_pub,gimbal_attitude_pub,relative_yaw_gimbal_aircraft_pub,north_attitude_pub;
 
 
     void AttitudeCallback(const geometry_msgs::PointStampedConstPtr& attitude);
@@ -56,6 +56,9 @@ private:
 
     double constrainAngle(double x);
 
+    void create_ned_to_map_static();
+
+    void create_drone_optimized_to_drone_velocity_static();
 
 };
 

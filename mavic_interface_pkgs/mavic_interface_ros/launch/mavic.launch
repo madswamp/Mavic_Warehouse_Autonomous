@@ -18,7 +18,7 @@
         </node>
 
         <node name="mavic_slam_gtsam_node" pkg="mavic_interface_ros" type="mavic_slam_gtsam_node" output="screen">
-            <param name="~init_tag" type="int" value="19" />
+            <param name="~init_tag" type="int" value="1" />
         </node>
 
         <node name="mavic_optimized_frames_node" pkg="mavic_interface_ros" type="mavic_optimized_frames_node" output="screen">
@@ -26,6 +26,22 @@
 
         <node name="mavic_dunker_pose_node" pkg="mavic_interface_ros" type="mavic_dunker_pose_node" output="screen">
         </node>
+
+        <node name="mavic_optimized_localization_aerostack_node" pkg="mavic_interface_ros" type="mavic_optimized_localization_aerostack_node" output="screen">
+        </node>
+
+        <node name="mavic_send_velocity_aircraft_node" pkg="mavic_interface_ros" type="mavic_send_velocity_aircraft_node" output="screen">
+            <param name="~Vertical_Control_Mode" type="string" value="0" /> <!--0 = Velocity_Mode 1 = Altitude_Mode-->
+            <param name="~Roll_Pitch_Mode" type="string" value="1" /> <!--0 = Angle_Mode 1 = Velocity_Mode-->
+            <param name="~Yaw_Mode" type="string" value="1" /> <!--0 = Angle_Mode 1 = Angular_Velocity_Mode-->
+            <param name="~Coordinate_System" type="string" value="1"/> <!--0 = Ground_Mode 1 = Body_Mode-->
+        </node>
+
+        <node name="mavic_send_waypoints_free_bot_node" pkg="mavic_interface_ros" type="mavic_send_waypoints_free_bot_node" output="screen">
+        </node>
+
+
+
 
         <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mavic_interface_ros)/config/rviz.rviz"/>
     </group>
